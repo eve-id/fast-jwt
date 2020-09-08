@@ -1,4 +1,4 @@
-# fast-jwt
+# fast-jwt - Tree-Shakable (only working by going through a bundler like rollup or webpack)
 
 [![Package Version](https://img.shields.io/npm/v/fast-jwt.svg)](https://npm.im/fast-jwt)
 [![Dependency Status](https://img.shields.io/david/nearform/fast-jwt)](https://david-dm.org/nearform/fast-jwt)
@@ -48,17 +48,17 @@ If the `key` option is a function, the signer will also accept a Node style call
 #### Example
 
 ```javascript
-const {createSigner} = require('fast-jwt')
+const { createSigner } = require('fast-jwt')
 
 // Sync style
 const signSync = createSigner({ key: 'secret' })
-const token = signSync({a: 1, b: 2, c: 3})
+const token = signSync({ a: 1, b: 2, c: 3 })
 // => eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJiIjoyLCJjIjozLCJpYXQiOjE1Nzk1MjEyMTJ9.mIcxteEVjbh2MnKQ3EQlojZojGSyA_guqRBYHQURcfnCSSBTT2OShF8lo9_ogjAv-5oECgmCur_cDWB7x3X53g
 
 // Callback style
 const signWithCallback = createSigner({ key: (callback) => callback(null, 'secret') })
 
-signWithCallback({a: 1, b: 2, c: 3}, (err, token) => {
+signWithCallback({ a: 1, b: 2, c: 3 }, (err, token) => {
   // token === eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJiIjoyLCJjIjozLCJpYXQiOjE1Nzk1MjEyMTJ9.mIcxteEVjbh2MnKQ3EQlojZojGSyA_guqRBYHQURcfnCSSBTT2OShF8lo9_ogjAv-5oECgmCur_cDWB7x3X53g
 })
 
@@ -66,7 +66,7 @@ signWithCallback({a: 1, b: 2, c: 3}, (err, token) => {
 async function test() {
   const signWithPromise = createSigner({ key: async () => 'secret' })
 
-  const token = await signWithPromise({a: 1, b: 2, c: 3})
+  const token = await signWithPromise({ a: 1, b: 2, c: 3 })
   // => eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJiIjoyLCJjIjozLCJpYXQiOjE1Nzk1MjEyMTJ9.mIcxteEVjbh2MnKQ3EQlojZojGSyA_guqRBYHQURcfnCSSBTT2OShF8lo9_ogjAv-5oECgmCur_cDWB7x3X53g
 }
 ```
@@ -141,7 +141,7 @@ const payload = verifySync(token)
 // => { a: 1, b: 2, c: 3, iat: 1579521212 }
 
 // Callback style with complete return
-const verifyWithCallback = createVerifier({ key: callback => callback(null, 'secret'), complete: true })
+const verifyWithCallback = createVerifier({ key: (callback) => callback(null, 'secret'), complete: true })
 
 verifyWithCallback(token, (err, sections) => {
   /*

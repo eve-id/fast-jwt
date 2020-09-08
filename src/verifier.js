@@ -1,12 +1,12 @@
 'use strict'
 
-const { createPublicKey, createSecretKey } = require('crypto')
-const Cache = require('mnemonist/lru-cache')
+import { createPublicKey, createSecretKey } from 'crypto'
+import Cache from 'mnemonist/lru-cache'
 
-const { useNewCrypto, hsAlgorithms, verifySignature, detectPublicKeyAlgorithms } = require('./crypto')
-const createDecoder = require('./decoder')
-const TokenError = require('./error')
-const { getAsyncKey, ensurePromiseCallback, hashToken } = require('./utils')
+import { useNewCrypto, hsAlgorithms, verifySignature, detectPublicKeyAlgorithms } from './crypto'
+import { createDecoder } from './decoder'
+import { TokenError } from './error'
+import { getAsyncKey, ensurePromiseCallback, hashToken } from './utils'
 
 const defaultCacheSize = 1000
 
@@ -51,7 +51,7 @@ function ensureStringClaimMatcher(raw) {
     raw = [raw]
   }
 
-  return raw.map(r => (r && typeof r.test === 'function' ? r : new RegExp(r.toString())))
+  return raw.map((r) => (r && typeof r.test === 'function' ? r : new RegExp(r.toString())))
 }
 
 function createCache(rawSize) {
@@ -130,7 +130,7 @@ function validateClaimType(values, claim, array, type) {
     ? `The ${claim} claim must be a ${type} or an array of ${type}s.`
     : `The ${claim} claim must be a ${type}.`
 
-  if (values.map(v => typeof v).some(t => t !== type)) {
+  if (values.map((v) => typeof v).some((t) => t !== type)) {
     throw new TokenError(TokenError.codes.invalidClaimType, typeFailureMessage)
   }
 }
@@ -140,7 +140,7 @@ function validateClaimDateField(values, claim, allowed, arrayValue) {
     ? `None of ${claim} claim values is allowed.`
     : `The ${claim} claim value is not allowed.`
 
-  if (!values.some(v => allowed.some(a => a.test(v)))) {
+  if (!values.some((v) => allowed.some((a) => a.test(v)))) {
     throw new TokenError(TokenError.codes.invalidClaimValue, failureMessage)
   }
 }
@@ -317,7 +317,7 @@ function verify(
   return promise
 }
 
-module.exports = function createVerifier(options) {
+export function createVerifier(options) {
   let {
     key,
     algorithms: allowedAlgorithms,

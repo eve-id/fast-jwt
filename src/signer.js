@@ -1,6 +1,6 @@
 'use strict'
 
-const {
+import {
   base64UrlMatcher,
   base64UrlReplacer,
   useNewCrypto,
@@ -10,10 +10,13 @@ const {
   edAlgorithms,
   detectPrivateKeyAlgorithm,
   createSignature
-} = require('./crypto')
-const TokenError = require('./error')
-const { getAsyncKey, ensurePromiseCallback } = require('./utils')
-const { createPrivateKey, createSecretKey } = require('crypto')
+} from './crypto'
+
+import { TokenError } from './error'
+
+import { getAsyncKey, ensurePromiseCallback } from './utils'
+
+import { createPrivateKey, createSecretKey } from 'crypto'
 
 const supportedAlgorithms = Array.from(
   new Set([...hsAlgorithms, ...esAlgorithms, ...rsaAlgorithms, ...edAlgorithms, 'none'])
@@ -165,7 +168,7 @@ function sign(
   return promise
 }
 
-module.exports = function createSigner(options) {
+export function createSigner(options) {
   let {
     key,
     algorithm,
@@ -269,7 +272,9 @@ module.exports = function createSigner(options) {
   }
 
   const fpo = { jti, aud, iss, sub, nonce }
-  const fixedPayload = Object.keys(fpo).reduce((obj, key) => { return (fpo[key] !== undefined) ? Object.assign(obj, { [key]: fpo[key] }) : obj }, {})
+  const fixedPayload = Object.keys(fpo).reduce((obj, key) => {
+    return fpo[key] !== undefined ? Object.assign(obj, { [key]: fpo[key] }) : obj
+  }, {})
 
   // Return the signer
   const context = {

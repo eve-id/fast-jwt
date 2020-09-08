@@ -1,6 +1,6 @@
 'use strict'
 
-const TokenError = require('./error')
+import { TokenError } from './error'
 
 function decode({ complete }, token) {
   // Make sure the token is a string or a Buffer - Other cases make no sense to even try to validate
@@ -52,7 +52,7 @@ function decode({ complete }, token) {
   }
 }
 
-module.exports = function createDecoder(options = {}) {
+export function createDecoder(options = {}) {
   const complete = options.complete || false
 
   return decode.bind(null, { complete })

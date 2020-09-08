@@ -1,16 +1,16 @@
 'use strict'
 
-const { createHash } = require('crypto')
+import { createHash } from 'crypto'
 const algorithmMatcher = /"alg"\s*:\s*"[HERP]S(256|384)"/m
 const edAlgorithmMatcher = /"alg"\s*:\s*"EdDSA"/m
 const ed448CurveMatcher = /"crv"\s*:\s*"Ed448"/m
 
-function getAsyncKey(handler, header, callback) {
+export function getAsyncKey(handler, header, callback) {
   const result = handler(header, callback)
 
   if (result && typeof result.then === 'function') {
     result
-      .then(key => {
+      .then((key) => {
         // This avoids the callback to be thrown twice if callback throws
         process.nextTick(() => callback(null, key))
       })
@@ -18,7 +18,7 @@ function getAsyncKey(handler, header, callback) {
   }
 }
 
-function ensurePromiseCallback(callback) {
+export function ensurePromiseCallback(callback) {
   if (typeof callback === 'function') {
     return [callback]
   }
@@ -31,7 +31,7 @@ function ensurePromiseCallback(callback) {
   })
 
   return [
-    function(err, token) {
+    function (err, token) {
       if (err) {
         return promiseReject(err)
       }
@@ -42,7 +42,7 @@ function ensurePromiseCallback(callback) {
   ]
 }
 
-function hashToken(token) {
+export function hashToken(token) {
   const rawHeader = token.split('.', 1)[0]
   const header = Buffer.from(rawHeader, 'base64').toString('utf-8')
   let hasher = null
@@ -56,10 +56,4 @@ function hashToken(token) {
   }
 
   return hasher.update(token).digest('hex')
-}
-
-module.exports = {
-  getAsyncKey,
-  ensurePromiseCallback,
-  hashToken
 }

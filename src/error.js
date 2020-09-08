@@ -1,6 +1,6 @@
 'use strict'
 
-class TokenError extends Error {
+export class TokenError extends Error {
   constructor(code, message, additional) {
     super(message)
     Error.captureStackTrace(this, this.constructor)
@@ -33,12 +33,10 @@ TokenError.codes = {
   verifyError: 'FAST_JWT_VERIFY_ERROR'
 }
 
-TokenError.wrap = function(originalError, code, message) {
+TokenError.wrap = function (originalError, code, message) {
   if (originalError instanceof TokenError) {
     return originalError
   }
 
   return new TokenError(code, message, { originalError })
 }
-
-module.exports = TokenError
