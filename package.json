@@ -32,10 +32,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/taosx/fast-jwt.git"
+    "url": "git+https://github.com/eve-id/fast-jwt.git"
   },
   "bugs": {
-    "url": "https://github.com/taosx/fast-jwt/issues"
+    "url": "https://github.com/eve-id/fast-jwt/issues"
   },
   "scripts": {
     "build": "rollup -c rollup.config.js",
