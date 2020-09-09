@@ -65,6 +65,7 @@ function sign(
     expiresIn,
     notBefore,
     kid,
+    typ,
     isAsync,
     additionalHeader,
     fixedPayload
@@ -82,7 +83,7 @@ function sign(
   // Prepare the header
   const header = {
     alg: algorithm,
-    typ: 'JWT',
+    typ: typ || 'JWT',
     kid,
     ...additionalHeader
   }
@@ -183,6 +184,7 @@ export function createSigner(options) {
     sub,
     nonce,
     kid,
+    typ,
     header: additionalHeader
   } = { clockTimestamp: 0, ...options }
 
@@ -286,6 +288,7 @@ export function createSigner(options) {
     expiresIn,
     notBefore,
     kid,
+    typ,
     isAsync: keyType === 'function',
     additionalHeader,
     fixedPayload
