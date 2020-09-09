@@ -40,7 +40,7 @@ for (const type of ['HS', 'ES', 'RS', 'PS']) {
     const privateKey = privateKeys[type === 'ES' ? algorithm : type]
     const publicKey = publicKeys[type === 'ES' ? algorithm : type]
 
-    test(`fast-jwt should correcty verify tokens created by jsonwebtoken - ${algorithm}`, t => {
+    test(`fast-jwt should correcty verify tokens created by jsonwebtoken - ${algorithm}`, (t) => {
       const verify = createVerifier({ algorithm, key: publicKey.toString() })
       const token = jsonwebtokenSign({ a: 1, b: 2, c: 3 }, privateKey.toString(), { algorithm, noTimestamp: true })
 
@@ -49,7 +49,7 @@ for (const type of ['HS', 'ES', 'RS', 'PS']) {
       t.end()
     })
 
-    test(`jsonwebtoken should correcty verify tokens created by fast-jwt - ${algorithm}`, t => {
+    test(`jsonwebtoken should correcty verify tokens created by fast-jwt - ${algorithm}`, (t) => {
       const signer = createSigner({ algorithm, key: privateKey, noTimestamp: true })
       const token = signer({ a: 1, b: 2, c: 3 })
 
@@ -61,7 +61,7 @@ for (const type of ['HS', 'ES', 'RS', 'PS']) {
 
 if (useNewCrypto) {
   for (const curve of ['Ed25519', 'Ed448']) {
-    test(`fast-jwt should correcty verify tokens created by jose - EdDSA with ${curve}`, t => {
+    test(`fast-jwt should correcty verify tokens created by jose - EdDSA with ${curve}`, (t) => {
       const verify = createVerifier({ key: publicKeys[curve].toString() })
       const token = joseSign({ a: 1, b: 2, c: 3 }, asKey(privateKeys[curve]), {
         iat: false,
@@ -75,7 +75,7 @@ if (useNewCrypto) {
       t.end()
     })
 
-    test(`jose should correcty verify tokens created by fast-jwt - EdDSA with ${curve}`, t => {
+    test(`jose should correcty verify tokens created by fast-jwt - EdDSA with ${curve}`, (t) => {
       const signer = createSigner({ key: privateKeys[curve], noTimestamp: true })
       const token = signer({ a: 1, b: 2, c: 3 })
 

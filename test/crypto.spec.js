@@ -91,7 +91,7 @@ for (const type of ['HS', 'ES', 'RS', 'PS']) {
     const detectedAlgorithm = `${type === 'PS' ? 'RS' : type}${bits}`
     const privateKey = privateKeys[type === 'ES' ? algorithm : type]
 
-    test(`detectPrivateKeyAlgorithm - ${type} keys should be recognized as ${detectedAlgorithm}`, t => {
+    test(`detectPrivateKeyAlgorithm - ${type} keys should be recognized as ${detectedAlgorithm}`, (t) => {
       t.equal(detectPrivateKeyAlgorithm(privateKey), detectedAlgorithm)
 
       t.end()
@@ -106,14 +106,14 @@ for (const type of ['HS', 'ES', 'RS', 'PS']) {
 for (const type of ['Ed25519', 'Ed448']) {
   const privateKey = privateKeys[type]
 
-  test(`detectPrivateKeyAlgorithm - ${type} keys should be recognized as EdDSA`, t => {
+  test(`detectPrivateKeyAlgorithm - ${type} keys should be recognized as EdDSA`, (t) => {
     t.strictDeepEqual(detectPrivateKeyAlgorithm(privateKey), 'EdDSA')
 
     t.end()
   })
 }
 
-test('detectPrivateKeyAlgorithm - malformed or encrypted key objects must be rejected', t => {
+test('detectPrivateKeyAlgorithm - malformed or encrypted key objects must be rejected', (t) => {
   t.throws(() => detectPrivateKeyAlgorithm({}), {
     message: 'The private key must be a string or a buffer.'
   })
@@ -134,7 +134,7 @@ test('detectPrivateKeyAlgorithm - malformed or encrypted key objects must be rej
   t.end()
 })
 
-test('detectPrivateKeyAlgorithm - malformed PEM files should be rejected', t => {
+test('detectPrivateKeyAlgorithm - malformed PEM files should be rejected', (t) => {
   t.throws(
     () =>
       detectPrivateKeyAlgorithm(Buffer.from('-----BEGIN PRIVATE KEY-----WHATEVER-----END PRIVATE KEY-----', 'utf-8')),
@@ -155,7 +155,7 @@ test('detectPrivateKeyAlgorithm - malformed PEM files should be rejected', t => 
   t.end()
 })
 
-test('detectPrivateKeyAlgorithm - public keys should be rejected', t => {
+test('detectPrivateKeyAlgorithm - public keys should be rejected', (t) => {
   t.throws(() => detectPrivateKeyAlgorithm(publicKeys.RS), {
     message: 'Public keys are not supported for signing.'
   })
@@ -163,7 +163,7 @@ test('detectPrivateKeyAlgorithm - public keys should be rejected', t => {
   t.end()
 })
 
-test('detectPrivateKeyAlgorithm - unrecognized PKCS8 OIDs should be rejected', t => {
+test('detectPrivateKeyAlgorithm - unrecognized PKCS8 OIDs should be rejected', (t) => {
   t.throws(() => detectPrivateKeyAlgorithm(invalidPrivatePKCS8), {
     message: 'Unsupported PEM PCKS8 private key with OID 1.2.840.10040.4.1.'
   })
@@ -171,7 +171,7 @@ test('detectPrivateKeyAlgorithm - unrecognized PKCS8 OIDs should be rejected', t
   t.end()
 })
 
-test('detectPrivateKeyAlgorithm - unrecognized EC curves should be rejected', t => {
+test('detectPrivateKeyAlgorithm - unrecognized EC curves should be rejected', (t) => {
   t.throws(() => detectPrivateKeyAlgorithm(invalidPrivateCurve), {
     message: 'Unsupported EC private key with curve 1.2.840.10045.3.0.13.'
   })
@@ -185,7 +185,7 @@ for (const type of ['HS', 'ES', 'RS', 'PS']) {
     const detectedAlgorithm = type === 'ES' ? [algorithm] : detectedAlgorithms[type]
     const publicKey = publicKeys[type === 'ES' ? algorithm : type]
 
-    test(`detectPublicKeyAlgorithms - ${type} keys should be recognized as ${detectedAlgorithm}`, t => {
+    test(`detectPublicKeyAlgorithms - ${type} keys should be recognized as ${detectedAlgorithm}`, (t) => {
       t.strictDeepEqual(detectPublicKeyAlgorithms(publicKey), detectedAlgorithm)
 
       t.end()
@@ -200,20 +200,20 @@ for (const type of ['HS', 'ES', 'RS', 'PS']) {
 for (const type of ['Ed25519', 'Ed448']) {
   const publicKey = publicKeys[type]
 
-  test(`detectPublicKeyAlgorithms - ${type} keys should be recognized as EdDSA`, t => {
+  test(`detectPublicKeyAlgorithms - ${type} keys should be recognized as EdDSA`, (t) => {
     t.strictDeepEqual(detectPublicKeyAlgorithms(publicKey), ['EdDSA'])
 
     t.end()
   })
 }
 
-test('detectPublicKeyAlgorithms - empty key should return "none"', t => {
+test('detectPublicKeyAlgorithms - empty key should return "none"', (t) => {
   t.equals(detectPublicKeyAlgorithms(), 'none')
 
   t.end()
 })
 
-test('detectPublicKeyAlgorithms - malformed or key objects must be rejected', t => {
+test('detectPublicKeyAlgorithms - malformed or key objects must be rejected', (t) => {
   t.throws(() => detectPublicKeyAlgorithms({}), {
     message: 'The public key must be a string or a buffer.'
   })
@@ -234,7 +234,7 @@ test('detectPublicKeyAlgorithms - malformed or key objects must be rejected', t 
   t.end()
 })
 
-test('detectPublicKeyAlgorithms - malformed PEM files should be rejected', t => {
+test('detectPublicKeyAlgorithms - malformed PEM files should be rejected', (t) => {
   t.throws(
     () => detectPublicKeyAlgorithms(Buffer.from('-----BEGIN PUBLIC KEY-----WHATEVER-----END PUBLIC KEY-----', 'utf-8')),
     {
@@ -245,7 +245,7 @@ test('detectPublicKeyAlgorithms - malformed PEM files should be rejected', t => 
   t.end()
 })
 
-test('detectPublicKeyAlgorithms - public keys should be rejected', t => {
+test('detectPublicKeyAlgorithms - public keys should be rejected', (t) => {
   t.throws(() => detectPublicKeyAlgorithms(privateKeys.RS), {
     message: 'Private keys are not supported for verifying.'
   })
@@ -253,7 +253,7 @@ test('detectPublicKeyAlgorithms - public keys should be rejected', t => {
   t.end()
 })
 
-test('detectPublicKeyAlgorithms - unrecognized PKCS8 OIDs should be rejected', t => {
+test('detectPublicKeyAlgorithms - unrecognized PKCS8 OIDs should be rejected', (t) => {
   t.throws(() => detectPublicKeyAlgorithms(invalidPublicPKCS8), {
     message: 'Unsupported PEM PCKS8 public key with OID 1.2.840.10040.4.1.'
   })
@@ -261,7 +261,7 @@ test('detectPublicKeyAlgorithms - unrecognized PKCS8 OIDs should be rejected', t
   t.end()
 })
 
-test('detectPublicKeyAlgorithms - unrecognized EC curves should be rejected', t => {
+test('detectPublicKeyAlgorithms - unrecognized EC curves should be rejected', (t) => {
   t.throws(() => detectPublicKeyAlgorithms(invalidPublicCurve), {
     message: 'Unsupported EC public key with curve 1.2.840.10045.3.0.13.'
   })
@@ -273,7 +273,7 @@ for (const bits of [256, 384, 512]) {
   const hsAlgorithm = `HS${bits}`
 
   // HS256, HS512, HS512
-  test(`${hsAlgorithm} based tokens round trip with string keys`, t => {
+  test(`${hsAlgorithm} based tokens round trip with string keys`, (t) => {
     const token = createSigner({ algorithm: hsAlgorithm, key: 'secretsecretsecret' })({ payload: 'PAYLOAD' })
 
     const verified = createVerifier({ key: 'secretsecretsecret' })(token)
@@ -285,7 +285,7 @@ for (const bits of [256, 384, 512]) {
     t.end()
   })
 
-  test(`${hsAlgorithm} based tokens round trip with buffer keys`, t => {
+  test(`${hsAlgorithm} based tokens round trip with buffer keys`, (t) => {
     const token = createSigner({ algorithm: hsAlgorithm, key: Buffer.from('secretsecretsecret', 'utf-8') })({
       payload: 'PAYLOAD'
     })
@@ -299,7 +299,7 @@ for (const bits of [256, 384, 512]) {
     t.end()
   })
 
-  test(`${hsAlgorithm} based tokens should validate the key`, async t => {
+  test(`${hsAlgorithm} based tokens should validate the key`, async (t) => {
     await t.rejects(createSigner({ algorithm: hsAlgorithm, key: async () => 123 })({ payload: 'PAYLOAD' }), {
       message: 'The key returned from the callback must be a string or a buffer containing a secret or a private key.'
     })
@@ -312,7 +312,7 @@ for (const type of ['ES', 'RS', 'PS']) {
     const privateKey = privateKeys[type === 'ES' ? algorithm : type]
     const publicKey = publicKeys[type === 'ES' ? algorithm : type]
 
-    test(`${algorithm} based tokens round trip with buffer keys`, t => {
+    test(`${algorithm} based tokens round trip with buffer keys`, (t) => {
       const token = createSigner({ algorithm, key: privateKey })({ payload: 'PAYLOAD' })
       const verified = createVerifier({ key: publicKey })(token)
 
@@ -323,7 +323,7 @@ for (const type of ['ES', 'RS', 'PS']) {
       t.end()
     })
 
-    test(`${algorithm} based tokens round trip with string keys`, t => {
+    test(`${algorithm} based tokens round trip with string keys`, (t) => {
       const token = createSigner({ algorithm, key: privateKey.toString('utf-8') })({
         payload: 'PAYLOAD'
       })
@@ -336,7 +336,7 @@ for (const type of ['ES', 'RS', 'PS']) {
       t.end()
     })
 
-    test(`${algorithm} based tokens should validate the private key`, async t => {
+    test(`${algorithm} based tokens should validate the private key`, async (t) => {
       await t.rejects(
         createSigner({ algorithm, key: async () => 123 })({ payload: 'PAYLOAD' }),
         {
@@ -347,7 +347,7 @@ for (const type of ['ES', 'RS', 'PS']) {
       )
     })
 
-    test(`${algorithm} based tokens should validate the public key`, async t => {
+    test(`${algorithm} based tokens should validate the public key`, async (t) => {
       const token = createSigner({ algorithm, key: privateKey })({ payload: 'PAYLOAD' })
 
       await t.rejects(createVerifier({ algorithms: [algorithm], key: async () => 123 })(token), {
@@ -362,7 +362,7 @@ if (useNewCrypto) {
     const privateKey = privateKeys[type]
     const publicKey = publicKeys[type]
 
-    test(`EdDSA with ${type} based tokens round trip with buffer keys`, t => {
+    test(`EdDSA with ${type} based tokens round trip with buffer keys`, (t) => {
       const token = createSigner({ algorithm: 'EdDSA', key: privateKey })({ payload: 'PAYLOAD' })
       const verified = createVerifier({ algorithms: ['EdDSA'], key: publicKey })(token)
 
@@ -373,7 +373,7 @@ if (useNewCrypto) {
       t.end()
     })
 
-    test(`EdDSA with ${type} based tokens round trip with string keys`, t => {
+    test(`EdDSA with ${type} based tokens round trip with string keys`, (t) => {
       const token = createSigner({ algorithm: 'EdDSA', key: privateKey.toString('utf-8') })({
         payload: 'PAYLOAD'
       })
@@ -386,7 +386,7 @@ if (useNewCrypto) {
       t.end()
     })
 
-    test(`EdDSA with ${type} based tokens should validate the private key`, async t => {
+    test(`EdDSA with ${type} based tokens should validate the private key`, async (t) => {
       await t.rejects(
         createSigner({ algorithm: 'EdDSA', key: async () => 123 })({ payload: 'PAYLOAD' }),
         {
@@ -397,7 +397,7 @@ if (useNewCrypto) {
       )
     })
 
-    test(`EdDSA with ${type} based tokens should validate the public key`, async t => {
+    test(`EdDSA with ${type} based tokens should validate the public key`, async (t) => {
       const token = createSigner({ algorithm: 'EdDSA', key: privateKey })({ payload: 'PAYLOAD' })
 
       await t.rejects(createVerifier({ algorithms: ['EdDSA'], key: async () => 123 })(token), {

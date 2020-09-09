@@ -9,7 +9,8 @@ const { createVerifier, createSigner } = require('../src')
 const { useNewCrypto } = require('../src/crypto')
 
 const payload = {
-  text: "It’s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there’s no knowing where you might be swept off to."
+  text:
+    "It’s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there’s no knowing where you might be swept off to."
 }
 
 // All the keys here are extracted from https://tools.ietf.org/html/rfc7520
@@ -70,7 +71,7 @@ const ecPrivateKey = asKey({
   d: 'AAhRON2r9cqXX1hg-RoI6R1tX5p2rUAYdmpHZoC1XNM56KtscrX6zbKipQrCW9CGZH3T4ubpnoTKLDYJ_fF3_rJt'
 }).toPEM(true)
 
-test('HS256', t => {
+test('HS256', (t) => {
   const expectedToken =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9.eyJ0ZXh0IjoiSXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4ifQ.1rxc48IZZfiOQFzXieSY08XI5bimhiyCPWTjCzZ3G2Y'
 
@@ -91,7 +92,7 @@ test('HS256', t => {
   t.end()
 })
 
-test('RS256', t => {
+test('RS256', (t) => {
   const expectedToken =
     'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJpbGJvLmJhZ2dpbnNAaG9iYml0b24uZXhhbXBsZSJ9.eyJ0ZXh0IjoiSXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4ifQ.IVYRXcdRwWOx1Gvz3iag8td3cIf4EdeIjrDM79vDwZwEBhipoeJz1JKW22Ag7BUE_Wsl-ONufHwbAP4Sr0dJUAJL9ZsAoH1UIkR5Xm4kpk-8gSAR4LB3RhHAfvbgDC-V2E91szKRHNKbvGtQLInCO7MADg9GMold_U74jDSYZE9nZVwkN5CebYeFUEsiLwq2_bKB3fCHJGh2fDzTXpkc2pm_h_oLxYuig8SB5dvPRg_j5I5y3DDyxvYluB3oMi4QUYYvNG5AnNufkPrlnjCw6QhHM1Ct3ocz1pOXmH3JCr3twXF0GUfY3H4MJTbBtmmxRmyErLEKcpRXHFWjT3DKGA'
 
@@ -110,7 +111,7 @@ test('RS256', t => {
   t.end()
 })
 
-test('PS384', t => {
+test('PS384', (t) => {
   const expectedToken =
     'eyJhbGciOiJQUzM4NCIsInR5cCI6IkpXVCIsImtpZCI6ImJpbGJvLmJhZ2dpbnNAaG9iYml0b24uZXhhbXBsZSJ9.eyJ0ZXh0IjoiSXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4ifQ.dM4A9qfogzmTfIB0-dbUcXUD9TfGC4wa6cft9wzuUmYBQEKpeAMOmtn3nTXAp3jFuhGCzmCHT2_y0-HKO2R55oewCiIAyPVHIffVK_Vga0eezX_wglVY1dtYvBaCpA6zYA3nJwmDsnK_Ivb-B5tuQYHuZUkL6A-SoLT2TfKic7yuLUs-Z5i58_f0ExwSwEPiMdbPXrg8azaAtiy5caNi76Vd_ROqNuhuFlgDAsACJPtJOpwmcgQ_er865QIkdvfV_UfOrcGPavjdKtj-h4UkikeX5YHsVYKoNJCo5hEAAgGcJKjGS4Bthm67y4Z_DfTxzxRfkFE7Sj15gSAZcSEONw'
 
@@ -130,7 +131,7 @@ test('PS384', t => {
   t.end()
 })
 
-test('ES512', t => {
+test('ES512', (t) => {
   const expectedToken =
     'eyJhbGciOiJFUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImJpbGJvLmJhZ2dpbnNAaG9iYml0b24uZXhhbXBsZSJ9.eyJ0ZXh0IjoiSXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4ifQ.AKrrbzQgTVYtM9iJGq2mzAAwAD0tK0sU2Oa3FqelV7Zc_VeC1VgApx9vkeZGen36CEcAvPpIAtcVZeWqp0nEB4JfAMsFhZI8QSuHnY152Abxi6WxaOXH22wYsYPYF_H4J41JG10C2X3ORHDsPrvIO8yfXdJ4AyNLOg6s0Suqq8YQP_8q'
 
@@ -165,7 +166,7 @@ if (useNewCrypto) {
     x: '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo'
   }).toPEM(true)
 
-  test('EdDSA - Ed25519', t => {
+  test('EdDSA - Ed25519', (t) => {
     const expectedToken =
       'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJ0ZXh0IjoiSXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4ifQ.s6A86zrJs551R4UxXwJsfRCGswdTJYFeNWjHUkZvragJ7hN43T5UetbpG4S6L2G7wOq5N_JJKrkbs0q0Gd-EAQ'
 
