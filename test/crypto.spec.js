@@ -4,14 +4,14 @@ const { test } = require('tap')
 const { readFileSync } = require('fs')
 const { resolve } = require('path')
 
-const { createVerifier, createSigner } = require('../src')
+const { createVerifier, createSigner } = require('../dist/cjs')
 const {
   useNewCrypto,
   hsAlgorithms,
   rsaAlgorithms,
   detectPrivateKeyAlgorithm,
   detectPublicKeyAlgorithms
-} = require('../src/crypto')
+} = require('../dist/cjs/crypto')
 
 const start = Math.floor(Date.now() / 1000)
 
@@ -107,7 +107,7 @@ for (const type of ['Ed25519', 'Ed448']) {
   const privateKey = privateKeys[type]
 
   test(`detectPrivateKeyAlgorithm - ${type} keys should be recognized as EdDSA`, (t) => {
-    t.strictDeepEqual(detectPrivateKeyAlgorithm(privateKey), 'EdDSA')
+    t.strictSame(detectPrivateKeyAlgorithm(privateKey), 'EdDSA')
 
     t.end()
   })
@@ -186,7 +186,7 @@ for (const type of ['HS', 'ES', 'RS', 'PS']) {
     const publicKey = publicKeys[type === 'ES' ? algorithm : type]
 
     test(`detectPublicKeyAlgorithms - ${type} keys should be recognized as ${detectedAlgorithm}`, (t) => {
-      t.strictDeepEqual(detectPublicKeyAlgorithms(publicKey), detectedAlgorithm)
+      t.strictSame(detectPublicKeyAlgorithms(publicKey), detectedAlgorithm)
 
       t.end()
     })
@@ -201,14 +201,14 @@ for (const type of ['Ed25519', 'Ed448']) {
   const publicKey = publicKeys[type]
 
   test(`detectPublicKeyAlgorithms - ${type} keys should be recognized as EdDSA`, (t) => {
-    t.strictDeepEqual(detectPublicKeyAlgorithms(publicKey), ['EdDSA'])
+    t.strictSame(detectPublicKeyAlgorithms(publicKey), ['EdDSA'])
 
     t.end()
   })
 }
 
 test('detectPublicKeyAlgorithms - empty key should return "none"', (t) => {
-  t.equals(detectPublicKeyAlgorithms(), 'none')
+  t.equal(detectPublicKeyAlgorithms(), 'none')
 
   t.end()
 })
@@ -279,8 +279,8 @@ for (const bits of [256, 384, 512]) {
     const verified = createVerifier({ key: 'secretsecretsecret' })(token)
 
     t.equal(verified.payload, 'PAYLOAD')
-    t.true(verified.iat >= start)
-    t.true(verified.iat <= Date.now() / 1000)
+    t.ok(verified.iat >= start)
+    t.ok(verified.iat <= Date.now() / 1000)
 
     t.end()
   })
@@ -293,8 +293,8 @@ for (const bits of [256, 384, 512]) {
     const verified = createVerifier({ key: 'secretsecretsecret' })(token)
 
     t.equal(verified.payload, 'PAYLOAD')
-    t.true(verified.iat >= start)
-    t.true(verified.iat <= Date.now() / 1000)
+    t.ok(verified.iat >= start)
+    t.ok(verified.iat <= Date.now() / 1000)
 
     t.end()
   })
@@ -317,8 +317,8 @@ for (const type of ['ES', 'RS', 'PS']) {
       const verified = createVerifier({ key: publicKey })(token)
 
       t.equal(verified.payload, 'PAYLOAD')
-      t.true(verified.iat >= start)
-      t.true(verified.iat <= Date.now() / 1000)
+      t.ok(verified.iat >= start)
+      t.ok(verified.iat <= Date.now() / 1000)
 
       t.end()
     })
@@ -330,8 +330,8 @@ for (const type of ['ES', 'RS', 'PS']) {
       const verified = createVerifier({ algorithms: [algorithm], key: publicKey.toString('utf-8') })(token)
 
       t.equal(verified.payload, 'PAYLOAD')
-      t.true(verified.iat >= start)
-      t.true(verified.iat <= Date.now() / 1000)
+      t.ok(verified.iat >= start)
+      t.ok(verified.iat <= Date.now() / 1000)
 
       t.end()
     })
@@ -367,8 +367,8 @@ if (useNewCrypto) {
       const verified = createVerifier({ algorithms: ['EdDSA'], key: publicKey })(token)
 
       t.equal(verified.payload, 'PAYLOAD')
-      t.true(verified.iat >= start)
-      t.true(verified.iat <= Date.now() / 1000)
+      t.ok(verified.iat >= start)
+      t.ok(verified.iat <= Date.now() / 1000)
 
       t.end()
     })
@@ -380,8 +380,8 @@ if (useNewCrypto) {
       const verified = createVerifier({ algorithms: ['EdDSA'], key: publicKey.toString('utf-8') })(token)
 
       t.equal(verified.payload, 'PAYLOAD')
-      t.true(verified.iat >= start)
-      t.true(verified.iat <= Date.now() / 1000)
+      t.ok(verified.iat >= start)
+      t.ok(verified.iat <= Date.now() / 1000)
 
       t.end()
     })

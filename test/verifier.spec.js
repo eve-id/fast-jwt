@@ -6,9 +6,9 @@ const { resolve } = require('path')
 const { test } = require('tap')
 const { install: fakeTime } = require('@sinonjs/fake-timers')
 
-const { createSigner, createVerifier, TokenError } = require('../src')
-const { useNewCrypto } = require('../src/crypto')
-const { hashToken } = require('../src/utils')
+const { createSigner, createVerifier, TokenError } = require('../dist/cjs')
+const { useNewCrypto } = require('../dist/cjs/crypto')
+const { hashToken } = require('../dist/cjs/utils')
 
 const privateKeys = {
   HS: 'secretsecretsecret',
@@ -38,14 +38,14 @@ function verify(token, options, callback) {
 }
 
 test('it correctly verifies a token - sync', (t) => {
-  t.strictDeepEqual(
+  t.strictSame(
     verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxfQ.57TF7smP9XDhIexBqPC-F1toZReYZLWb_YRU5tv0sxM', {
       noTimestamp: true
     }),
     { a: 1 }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjIwMDAwMDAwMDAsImV4cCI6MjEwMDAwMDAwMH0.vrIO0e4YNXgzqdj7RcTqmP8AlCuvfYoxJCkma78eILA',
       { clockTimestamp: 2010000000 }
@@ -53,7 +53,7 @@ test('it correctly verifies a token - sync', (t) => {
     { a: 1, iat: 2000000000, exp: 2100000000 }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxfQ.57TF7smP9XDhIexBqPC-F1toZReYZLWb_YRU5tv0sxM', {
       checkTyp: 'jwt',
       noTimestamp: true
@@ -61,7 +61,7 @@ test('it correctly verifies a token - sync', (t) => {
     { a: 1 }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6ImFwcGxpY2F0aW9uL2p3dCJ9.eyJhIjoxfQ.1ptuaNj5R0owE-5663LpMknK3eRgZVDHkMkOKkxlteM',
       {
@@ -88,7 +88,7 @@ test('it correctly verifies a token - sync', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxfQ.57TF7smP9XDhIexBqPC-F1toZReYZLWb_YRU5tv0sxM', {
       noTimestamp: true,
       complete: true
@@ -101,7 +101,7 @@ test('it correctly verifies a token - sync', (t) => {
   )
 
   if (useNewCrypto) {
-    t.strictDeepEqual(
+    t.strictSame(
       verify(
         'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkifQ.eyJhIjoxfQ.n4isU7JqaKRVOyx2ni7b_iaAzB75pAUCW6CetcoClhtJ5yDM7YkNMbKqmDUhTKMpupAcztIjX8m4mZwpA33HAA',
         { key: publicKeys.Ed25519 }
@@ -128,7 +128,7 @@ test('it correctly verifies a token - sync', (t) => {
 })
 
 test('it correctly verifies a token - async - key with callback', async (t) => {
-  t.strictDeepEqual(
+  t.strictSame(
     await verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxfQ.57TF7smP9XDhIexBqPC-F1toZReYZLWb_YRU5tv0sxM', {
       key: (_h, callback) => setTimeout(() => callback(null, 'secret'), 10),
       noTimestamp: true
@@ -136,7 +136,7 @@ test('it correctly verifies a token - async - key with callback', async (t) => {
     { a: 1 }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     await verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxfQ.57TF7smP9XDhIexBqPC-F1toZReYZLWb_YRU5tv0sxM', {
       algorithms: ['HS256'],
       key: (_h, callback) => setTimeout(() => callback(null, 'secret'), 10),
@@ -152,7 +152,7 @@ test('it correctly verifies a token - async - key with callback', async (t) => {
 })
 
 test('it correctly verifies a token - async - key as promise', async (t) => {
-  t.strictDeepEqual(
+  t.strictSame(
     await verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxfQ.57TF7smP9XDhIexBqPC-F1toZReYZLWb_YRU5tv0sxM', {
       key: async () => Buffer.from('secret', 'utf-8'),
       noTimestamp: true
@@ -162,7 +162,7 @@ test('it correctly verifies a token - async - key as promise', async (t) => {
 })
 
 test('it correctly verifies a token - async - static key', async (t) => {
-  t.strictDeepEqual(
+  t.strictSame(
     await verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxfQ.57TF7smP9XDhIexBqPC-F1toZReYZLWb_YRU5tv0sxM', {
       noTimestamp: true
     }),
@@ -176,7 +176,7 @@ test('it correctly verifies a token - callback - key as promise', (t) => {
     { key: async () => Buffer.from('secret', 'utf-8'), noTimestamp: true },
     (error, payload) => {
       t.type(error, 'null')
-      t.strictDeepEqual(payload, { a: 1 })
+      t.strictSame(payload, { a: 1 })
       t.end()
     }
   )
@@ -240,7 +240,7 @@ test('it correctly handle errors - callback', (t) => {
       }
     },
     (error, token) => {
-      t.true(error instanceof TokenError)
+      t.ok(error instanceof TokenError)
       t.equal(error.message, 'Cannot fetch key.')
 
       t.end()
@@ -257,7 +257,7 @@ test('it correctly handle errors - evented callback', (t) => {
       }
     },
     (error, token) => {
-      t.true(error instanceof TokenError)
+      t.ok(error instanceof TokenError)
       t.equal(error.message, 'The token signature is invalid.')
 
       t.end()
@@ -314,7 +314,7 @@ test('it validates if the token is active unless explicitily disabled', (t) => {
     { message: 'The token will be active at 2033-05-18T03:33:20.000Z.' }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjAsIm5iZiI6MjAwMDAwMDAwMH0.PlCCCgSnL38HaOY1-bkWnz-LX9WW2b772Zs3oxQJIv4',
       {
@@ -338,7 +338,7 @@ test('it validates if the token has not expired (via exp) unless explicitily dis
     { message: 'The token has expired at 1970-01-01T00:01:41.000Z.' }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMCwiZXhwIjoxMDF9.ULKqTsvUYm7iNOKA6bP5NXsa1A8vofgPIGiC182Vf_Q',
       {
@@ -362,7 +362,7 @@ test('it validates if the token has not expired (via maxAge) only if explicitily
     { message: 'The token has expired at 1970-01-01T00:05:00.000Z.' }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMH0.5V5yFNSqmn0w6yDR1vUbykF36WwdQmADMTLJwiJtx8w'),
     { a: 1, iat: 100 }
   )
@@ -401,7 +401,7 @@ test('it validates the jti claim only if explicitily enabled', (t) => {
     { message: 'The jti claim value is not allowed.' }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedJti: 'JTI' }
@@ -416,7 +416,7 @@ test('it validates the jti claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedJti: ['ABX', 'JTI'] }
@@ -431,7 +431,7 @@ test('it validates the jti claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedJti: ['ABX', /^J/] }
@@ -490,7 +490,7 @@ test('it validates the aud claim only if explicitily enabled', (t) => {
     { message: 'None of aud claim values are allowed.' }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEIiwiRFVBMiJdLCJpc3MiOiJJU1MiLCJzdWIiOiJTVUIiLCJub25jZSI6Ik5PTkNFIn0.lhu5t694BY0QmF7SChUw7Z9nUPtupWCkhrQ2rqN06GU',
       { allowedAud: 'AUD' }
@@ -505,7 +505,7 @@ test('it validates the aud claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedAud: ['ABX', 'AUD1'] }
@@ -520,7 +520,7 @@ test('it validates the aud claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedAud: ['ABX', /^D/] }
@@ -569,7 +569,7 @@ test('it validates the iss claim only if explicitily enabled', (t) => {
     { message: 'The iss claim value is not allowed.' }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedIss: 'ISS' }
@@ -584,7 +584,7 @@ test('it validates the iss claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedIss: ['ABX', 'ISS'] }
@@ -599,7 +599,7 @@ test('it validates the iss claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedIss: ['ABX', /^I/] }
@@ -648,7 +648,7 @@ test('it validates the sub claim only if explicitily enabled', (t) => {
     { message: 'The sub claim value is not allowed.' }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedSub: 'SUB' }
@@ -663,7 +663,7 @@ test('it validates the sub claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedSub: ['ABX', 'SUB'] }
@@ -678,7 +678,7 @@ test('it validates the sub claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedSub: ['ABX', /^S/] }
@@ -727,7 +727,7 @@ test('it validates the nonce claim only if explicitily enabled', (t) => {
     { message: 'The nonce claim value is not allowed.' }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedNonce: 'NONCE' }
@@ -742,7 +742,7 @@ test('it validates the nonce claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedNonce: ['ABX', 'NONCE'] }
@@ -757,7 +757,7 @@ test('it validates the nonce claim only if explicitily enabled', (t) => {
     }
   )
 
-  t.strictDeepEqual(
+  t.strictSame(
     verify(
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
       { allowedNonce: ['ABX', /^N/] }
@@ -775,10 +775,7 @@ test('it validates the nonce claim only if explicitily enabled', (t) => {
   t.end()
 })
 
-<<<<<<< HEAD
-test('token type validation', (t) => {
-=======
-test('it validates allowed claims values using equality when appropriate', t => {
+test('it validates allowed claims values using equality when appropriate', (t) => {
   // The iss claim in the token starts with ISS
   t.throws(
     () => {
@@ -804,8 +801,7 @@ test('it validates allowed claims values using equality when appropriate', t => 
   t.end()
 })
 
-test('token type validation', t => {
->>>>>>> upstream/master
+test('token type validation', (t) => {
   t.throws(() => createVerifier({ key: 'secret' })(123), {
     message: 'The token must be a string or a buffer.'
   })
@@ -864,9 +860,9 @@ test('caching - sync', (t) => {
   const verifier = createVerifier({ key: 'secret', cache: true })
 
   t.equal(verifier.cache.size, 0)
-  t.strictDeepEqual(verifier(token), { a: 1 })
+  t.strictSame(verifier(token), { a: 1 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier(token), { a: 1 })
+  t.strictSame(verifier(token), { a: 1 })
   t.equal(verifier.cache.size, 1)
 
   t.throws(() => verifier(invalidToken), { message: 'The token signature is invalid.' })
@@ -874,8 +870,8 @@ test('caching - sync', (t) => {
   t.throws(() => verifier(invalidToken), { message: 'The token signature is invalid.' })
   t.equal(verifier.cache.size, 2)
 
-  t.strictDeepEqual(verifier.cache.get(hashToken(token))[0], { a: 1 })
-  t.true(verifier.cache.get(hashToken(invalidToken))[0] instanceof TokenError)
+  t.strictSame(verifier.cache.get(hashToken(token))[0], { a: 1 })
+  t.ok(verifier.cache.get(hashToken(invalidToken))[0] instanceof TokenError)
 
   t.end()
 })
@@ -887,9 +883,9 @@ test('caching - async', async (t) => {
   const verifier = createVerifier({ key: async () => 'secret', cache: true })
 
   t.equal(verifier.cache.size, 0)
-  t.strictDeepEqual(await verifier(token), { a: 1 })
+  t.strictSame(await verifier(token), { a: 1 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(await verifier(token), { a: 1 })
+  t.strictSame(await verifier(token), { a: 1 })
   t.equal(verifier.cache.size, 1)
 
   await t.rejects(async () => verifier(invalidToken), { message: 'The token signature is invalid.' })
@@ -897,8 +893,8 @@ test('caching - async', async (t) => {
   await t.rejects(async () => verifier(invalidToken), { message: 'The token signature is invalid.' })
   t.equal(verifier.cache.size, 2)
 
-  t.strictDeepEqual(verifier.cache.get(hashToken(token))[0], { a: 1 })
-  t.true(verifier.cache.get(hashToken(invalidToken))[0] instanceof TokenError)
+  t.strictSame(verifier.cache.get(hashToken(token))[0], { a: 1 })
+  t.ok(verifier.cache.get(hashToken(invalidToken))[0] instanceof TokenError)
 })
 
 for (const type of ['HS', 'ES', 'RS', 'PS']) {
@@ -914,7 +910,7 @@ for (const type of ['HS', 'ES', 'RS', 'PS']) {
 
       const hash = createHash(`sha${bits}`).update(token).digest('hex')
 
-      t.strictDeepEqual(verifier(token), { a: 1 })
+      t.strictSame(verifier(token), { a: 1 })
       t.equal(verifier.cache.size, 1)
       t.equal(Array.from(verifier.cache.keys())[0], hash)
 
@@ -930,7 +926,7 @@ if (useNewCrypto) {
     const token = signer({ a: 1 })
     const hash = createHash('sha512').update(token).digest('hex')
 
-    t.strictDeepEqual(verifier(token), { a: 1 })
+    t.strictSame(verifier(token), { a: 1 })
     t.equal(verifier.cache.size, 1)
     t.equal(Array.from(verifier.cache.keys())[0], hash)
 
@@ -948,7 +944,7 @@ if (useNewCrypto) {
     const token = signer({ a: 1 })
     const hash = createHash('shake256', { outputLength: 114 }).update(token).digest('hex')
 
-    t.strictDeepEqual(verifier(token), { a: 1 })
+    t.strictSame(verifier(token), { a: 1 })
     t.equal(verifier.cache.size, 1)
     t.equal(Array.from(verifier.cache.keys())[0], hash)
 
@@ -964,15 +960,15 @@ test('caching - should be able to manipulate cache directy', (t) => {
   const token = signer({ a: 1 })
 
   t.equal(verifier.cache.size, 0)
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100, exp: 200 })
+  t.strictSame(verifier(token), { a: 1, iat: 100, exp: 200 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, exp: 200 }, 0, 200000])
+  t.strictSame(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, exp: 200 }, 0, 200000])
   verifier.cache.clear()
   t.equal(verifier.cache.size, 0)
   verifier.cache.set(token, 'WHATEVER')
-  t.strictDeepEqual(verifier.cache.get(token), 'WHATEVER')
+  t.strictSame(verifier.cache.get(token), 'WHATEVER')
   verifier.cache.set(token, null)
-  t.strictDeepEqual(verifier.cache.get(token), null)
+  t.strictSame(verifier.cache.get(token), null)
 
   clock.uninstall()
 
@@ -988,11 +984,11 @@ test('caching - should correctly expire cached token using the exp claim', (t) =
 
   // First of all, make a token and verify it's cached
   t.equal(verifier.cache.size, 0)
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100, exp: 200 })
+  t.strictSame(verifier(token), { a: 1, iat: 100, exp: 200 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100, exp: 200 })
+  t.strictSame(verifier(token), { a: 1, iat: 100, exp: 200 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, exp: 200 }, 0, 200000])
+  t.strictSame(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, exp: 200 }, 0, 200000])
 
   // Now advance to expired time
   clock.tick(200000)
@@ -1000,7 +996,7 @@ test('caching - should correctly expire cached token using the exp claim', (t) =
   // The token should now be expired and the cache should have been updated to reflect it
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:03:20.000Z.' })
   t.equal(verifier.cache.size, 1)
-  t.true(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
+  t.ok(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
 
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:03:20.000Z.' })
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:03:20.000Z.' })
@@ -1011,12 +1007,12 @@ test('caching - should correctly expire cached token using the exp claim', (t) =
   verifier.cache.clear()
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:03:20.000Z.' })
   t.equal(verifier.cache.size, 1)
-  t.true(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
+  t.ok(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
 
   const verifierWithTimestamp = createVerifier({ key: 'secret', cache: true, clockTimestamp: 100000 })
-  t.strictDeepEqual(verifierWithTimestamp(token), { a: 1, iat: 100, exp: 200 })
+  t.strictSame(verifierWithTimestamp(token), { a: 1, iat: 100, exp: 200 })
   t.equal(verifierWithTimestamp.cache.size, 1)
-  t.strictDeepEqual(verifierWithTimestamp.cache.get(hashToken(token)), [{ a: 1, iat: 100, exp: 200 }, 0, 200000])
+  t.strictSame(verifierWithTimestamp.cache.get(hashToken(token)), [{ a: 1, iat: 100, exp: 200 }, 0, 200000])
 
   t.end()
 })
@@ -1030,11 +1026,11 @@ test('caching - should correctly expire cached token using the maxAge claim', (t
 
   // First of all, make a token and verify it's cached
   t.equal(verifier.cache.size, 0)
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100 })
+  t.strictSame(verifier(token), { a: 1, iat: 100 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100 })
+  t.strictSame(verifier(token), { a: 1, iat: 100 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100 }, 0, 200000])
+  t.strictSame(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100 }, 0, 200000])
 
   // Now advance to expired time
   clock.tick(200000)
@@ -1042,7 +1038,7 @@ test('caching - should correctly expire cached token using the maxAge claim', (t
   // The token should now be expired and the cache should have been updated to reflect it
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:03:20.000Z.' })
   t.equal(verifier.cache.size, 1)
-  t.true(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
+  t.ok(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:03:20.000Z.' })
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:03:20.000Z.' })
 
@@ -1062,17 +1058,17 @@ test('caching - should correctly expire not yet cached token using the nbf claim
   t.throws(() => verifier(token), { message: 'The token will be active at 1970-01-01T00:05:00.000Z.' })
   t.equal(verifier.cache.size, 1)
   t.throws(() => verifier(token), { message: 'The token will be active at 1970-01-01T00:05:00.000Z.' })
-  t.true(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
+  t.ok(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
 
   // Now advance to expired time
   clock.tick(200000)
 
   // The token should now be active and the cache should have been updated to reflect it
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100, nbf: 300 })
+  t.strictSame(verifier(token), { a: 1, iat: 100, nbf: 300 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100, nbf: 300 })
+  t.strictSame(verifier(token), { a: 1, iat: 100, nbf: 300 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, nbf: 300 }, 300000, 900000])
+  t.strictSame(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, nbf: 300 }, 300000, 900000])
 
   clock.uninstall()
   t.end()
@@ -1090,17 +1086,17 @@ test('caching - should be able to consider both nbf and exp field at the same ti
   t.throws(() => verifier(token), { message: 'The token will be active at 1970-01-01T00:05:00.000Z.' })
   t.equal(verifier.cache.size, 1)
   t.throws(() => verifier(token), { message: 'The token will be active at 1970-01-01T00:05:00.000Z.' })
-  t.true(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
+  t.ok(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
 
   // Now advance to activation time
   clock.tick(200000)
 
   // The token should now be active and the cache should have been updated to reflect it
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
+  t.strictSame(verifier(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
+  t.strictSame(verifier(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, nbf: 300, exp: 500 }, 300000, 500000])
+  t.strictSame(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, nbf: 300, exp: 500 }, 300000, 500000])
 
   // Now advance again after the expiry time
   clock.tick(210000)
@@ -1108,7 +1104,7 @@ test('caching - should be able to consider both nbf and exp field at the same ti
   // The token should now be expired and the cache should have been updated to reflect it
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:08:20.000Z.' })
   t.equal(verifier.cache.size, 1)
-  t.true(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
+  t.ok(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:08:20.000Z.' })
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:08:20.000Z.' })
 
@@ -1130,24 +1126,24 @@ test('caching - should ignore the nbf and exp when asked to', (t) => {
   t.throws(() => verifier(token), { message: 'The token will be active at 1970-01-01T00:05:00.000Z.' })
   t.equal(verifier.cache.size, 1)
   t.throws(() => verifier(token), { message: 'The token will be active at 1970-01-01T00:05:00.000Z.' })
-  t.true(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
+  t.ok(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
 
   // For the verifier which ignores notBefore, the token is already active
-  t.strictDeepEqual(verifierNoNbf(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
+  t.strictSame(verifierNoNbf(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
   t.equal(verifierNoNbf.cache.size, 1)
-  t.strictDeepEqual(verifierNoNbf(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
+  t.strictSame(verifierNoNbf(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
   t.equal(verifierNoNbf.cache.size, 1)
-  t.strictDeepEqual(verifierNoNbf.cache.get(hashToken(token)), [{ a: 1, iat: 100, nbf: 300, exp: 500 }, 0, 500000])
+  t.strictSame(verifierNoNbf.cache.get(hashToken(token)), [{ a: 1, iat: 100, nbf: 300, exp: 500 }, 0, 500000])
 
   // Now advance to activation time
   clock.tick(200000)
 
   // The token should now be active and the cache should have been updated to reflect it
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
+  t.strictSame(verifier(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
+  t.strictSame(verifier(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
   t.equal(verifier.cache.size, 1)
-  t.strictDeepEqual(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, nbf: 300, exp: 500 }, 300000, 500000])
+  t.strictSame(verifier.cache.get(hashToken(token)), [{ a: 1, iat: 100, nbf: 300, exp: 500 }, 300000, 500000])
 
   // Now advance again after the expiry time
   clock.tick(210000)
@@ -1155,20 +1151,16 @@ test('caching - should ignore the nbf and exp when asked to', (t) => {
   // The token should now be expired and the cache should have been updated to reflect it
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:08:20.000Z.' })
   t.equal(verifier.cache.size, 1)
-  t.true(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
+  t.ok(verifier.cache.get(hashToken(token))[0] instanceof TokenError)
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:08:20.000Z.' })
   t.throws(() => verifier(token), { message: 'The token has expired at 1970-01-01T00:08:20.000Z.' })
 
   // For the verifier which ignores expiration, the token is still active
-  t.strictDeepEqual(verifierNoExp(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
+  t.strictSame(verifierNoExp(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
   t.equal(verifierNoExp.cache.size, 1)
-  t.strictDeepEqual(verifierNoExp(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
+  t.strictSame(verifierNoExp(token), { a: 1, iat: 100, nbf: 300, exp: 500 })
   t.equal(verifierNoExp.cache.size, 1)
-  t.strictDeepEqual(verifierNoExp.cache.get(hashToken(token)), [
-    { a: 1, iat: 100, nbf: 300, exp: 500 },
-    300000,
-    1110000
-  ])
+  t.strictSame(verifierNoExp.cache.get(hashToken(token)), [{ a: 1, iat: 100, nbf: 300, exp: 500 }, 300000, 1110000])
 
   clock.uninstall()
   t.end()

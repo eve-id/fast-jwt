@@ -4,8 +4,8 @@ const { readFileSync } = require('fs')
 const { resolve } = require('path')
 const { test } = require('tap')
 
-const { createSigner, createVerifier, TokenError } = require('../src')
-const { useNewCrypto } = require('../src/crypto')
+const { createSigner, createVerifier, TokenError } = require('../dist/cjs')
+const { useNewCrypto } = require('../dist/cjs/crypto')
 
 const privateKeys = {
   HS: 'secretsecretsecret',
@@ -108,36 +108,36 @@ test('it correctly autodetects the algorithm depending on the secret provided', 
 
   let token = createSigner({ key: privateKeys.HS })({ a: 1 })
   let verification = hsVerifier(token)
-  t.is(verification.header.alg, 'HS256')
+  t.equal(verification.header.alg, 'HS256')
 
   token = createSigner({ key: privateKeys.RS })({ a: 1 })
   verification = rsVerifier(token)
-  t.is(verification.header.alg, 'RS256')
+  t.equal(verification.header.alg, 'RS256')
 
   token = createSigner({ key: privateKeys.PS })({ a: 1 })
   verification = psVerifier(token)
-  t.is(verification.header.alg, 'RS256')
+  t.equal(verification.header.alg, 'RS256')
 
   token = createSigner({ key: privateKeys.ES256 })({ a: 1 })
   verification = es256Verifier(token)
-  t.is(verification.header.alg, 'ES256')
+  t.equal(verification.header.alg, 'ES256')
 
   token = createSigner({ key: privateKeys.ES384 })({ a: 1 })
   verification = es384Verifier(token)
-  t.is(verification.header.alg, 'ES384')
+  t.equal(verification.header.alg, 'ES384')
 
   token = createSigner({ key: privateKeys.ES512 })({ a: 1 })
   verification = es512Verifier(token)
-  t.is(verification.header.alg, 'ES512')
+  t.equal(verification.header.alg, 'ES512')
 
   if (useNewCrypto) {
     token = createSigner({ key: privateKeys.Ed25519 })({ a: 1 })
     verification = es25519Verifier(token)
-    t.is(verification.header.alg, 'EdDSA')
+    t.equal(verification.header.alg, 'EdDSA')
 
     token = createSigner({ key: privateKeys.Ed448 })({ a: 1 })
     verification = es448Verifier(token)
-    t.is(verification.header.alg, 'EdDSA')
+    t.equal(verification.header.alg, 'EdDSA')
   }
 
   t.end()
@@ -195,10 +195,7 @@ test('it adds a exp claim, overriding the payload one, only if the payload is a 
   t.end()
 })
 
-<<<<<<< HEAD
-test('it adds a nbf claim, overriding the payload one, only if the payload is a object', (t) => {
-=======
-test('it adds the payload exp claim', t => {
+test('it adds the payload exp claim', (t) => {
   t.equal(
     sign({ a: 1, iat: 100, exp: 200 }, {}),
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMCwiZXhwIjoyMDB9.RJbB3-VIjLIQr-VmZ1Kl42MrHr2pAU-CQuXK8jHMKR0'
@@ -207,7 +204,7 @@ test('it adds the payload exp claim', t => {
   t.end()
 })
 
-test('it ignores invalid exp claim', t => {
+test('it ignores invalid exp claim', (t) => {
   t.equal(
     sign({ a: 1, iat: 100, exp: Number.NaN }, {}),
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMH0.5V5yFNSqmn0w6yDR1vUbykF36WwdQmADMTLJwiJtx8w'
@@ -226,8 +223,7 @@ test('it ignores invalid exp claim', t => {
   t.end()
 })
 
-test('it adds a nbf claim, overriding the payload one, only if the payload is a object', t => {
->>>>>>> upstream/master
+test('it adds a nbf claim, overriding the payload one, only if the payload is a object', (t) => {
   t.equal(
     sign({ a: 1, iat: 100 }, { notBefore: 1000 }),
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMCwibmJmIjoxMDF9.WhZeNowse7q1s5FSlcMcs_4KcxXpSdQ4yqv0xrGB3sU'
@@ -385,7 +381,7 @@ test('it correctly handle errors - callback', (t) => {
       noTimestamp: true
     },
     (error, token) => {
-      t.true(error instanceof TokenError)
+      t.ok(error instanceof TokenError)
       t.equal(error.message, 'Cannot fetch key.')
 
       t.end()
@@ -403,7 +399,7 @@ test('it correctly validates the key received from the callback', (t) => {
       noTimestamp: true
     },
     (error, token) => {
-      t.true(error instanceof TokenError)
+      t.ok(error instanceof TokenError)
       t.equal(
         error.message,
         'The key returned from the callback must be a string or a buffer containing a secret or a private key.'
@@ -425,7 +421,7 @@ test('it correctly handle errors - evented callback', (t) => {
       algorithm: 'RS256'
     },
     (error, token) => {
-      t.true(error instanceof TokenError)
+      t.ok(error instanceof TokenError)
       t.equal(error.message, 'Invalid private key provided for algorithm RS256.')
 
       t.end()
@@ -437,8 +433,8 @@ test('returns a promise according to key option', (t) => {
   const s1 = createSigner({ key: 'secret' })({ a: 'PAYLOAD' })
   const s2 = createSigner({ key: async () => 'secret' })({ a: 'PAYLOAD' })
 
-  t.true(typeof s1.then === 'undefined')
-  t.true(typeof s2.then === 'function')
+  t.ok(typeof s1.then === 'undefined')
+  t.ok(typeof s2.then === 'function')
 
   s2.then(
     () => false,
@@ -460,7 +456,7 @@ test('payload validation', (t) => {
   t.end()
 })
 
-test('exp claim validation', t => {
+test('exp claim validation', (t) => {
   t.throws(() => createSigner({ key: 'secret' })({ exp: 'exp' }), {
     message: 'The exp claim must be a positive integer.'
   })

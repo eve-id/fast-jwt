@@ -2,7 +2,7 @@
 
 const fastify = require('fastify')()
 
-const { createSigner, createVerifier } = require('../src')
+const { createSigner, createVerifier } = require('../dist/cjs')
 const key = 'secretsecretsecret'
 
 const { sign: signerJwt, verify: verifierJwt } = require('jsonwebtoken')

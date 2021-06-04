@@ -11,7 +11,7 @@ const {
   JWK: { asKey }
 } = require('jose')
 
-const { createSigner, createDecoder, createVerifier } = require('../src')
+const { createSigner, createDecoder, createVerifier } = require('../dist/cjs')
 
 const output = []
 const cronometroOptions = {
@@ -62,11 +62,7 @@ const publicKeys = {
 }
 
 async function saveLogs(type) {
-  const now = new Date()
-    .toISOString()
-    .replace(/[-:]/g, '')
-    .replace('T', '-')
-    .slice(0, 15)
+  const now = new Date().toISOString().replace(/[-:]/g, '').replace('T', '-').slice(0, 15)
 
   const directory = resolve(__dirname, 'logs')
 
@@ -99,22 +95,22 @@ function compareDecoding(token, algorithm) {
 
   return cronometro(
     {
-      [`${algorithm} - fast-jwt`]: function() {
+      [`${algorithm} - fast-jwt`]: function () {
         fastjwtDecoder(token)
       },
-      [`${algorithm} - fast-jwt (complete)`]: function() {
+      [`${algorithm} - fast-jwt (complete)`]: function () {
         fastjwtCompleteDecoder(token)
       },
-      [`${algorithm} - jsonwebtoken`]: function() {
+      [`${algorithm} - jsonwebtoken`]: function () {
         jsonwebtokenDecode(token)
       },
-      [`${algorithm} - jsonwebtoken (complete)`]: function() {
+      [`${algorithm} - jsonwebtoken (complete)`]: function () {
         jsonwebtokenDecode(token, { complete: true })
       },
-      [`${algorithm} - jose`]: function() {
+      [`${algorithm} - jose`]: function () {
         joseDecode(token)
       },
-      [`${algorithm} - jose (complete)`]: function() {
+      [`${algorithm} - jose (complete)`]: function () {
         joseDecode(token, { complete: true })
       }
     },
@@ -162,27 +158,27 @@ async function compareSigning(payload, algorithm, privateKey, publicKey) {
   }
 
   const tests = {
-    [`${algorithm} - jose (sync)`]: function() {
+    [`${algorithm} - jose (sync)`]: function () {
       joseSign(payload, josePrivateKey, joseOptions)
     }
   }
 
   if (!isEdDSA) {
     Object.assign(tests, {
-      [`${algorithm} - jsonwebtoken (sync)`]: function() {
+      [`${algorithm} - jsonwebtoken (sync)`]: function () {
         jsonwebtokenSign(payload, privateKey, { algorithm, noTimestamp: true })
       },
-      [`${algorithm} - jsonwebtoken (async)`]: function(done) {
+      [`${algorithm} - jsonwebtoken (async)`]: function (done) {
         jsonwebtokenSign(payload, privateKey, { algorithm, noTimestamp: true }, done)
       }
     })
   }
 
   Object.assign(tests, {
-    [`${algorithm} - fast-jwt (sync)`]: function() {
+    [`${algorithm} - fast-jwt (sync)`]: function () {
       fastjwtSign(payload)
     },
-    [`${algorithm} - fast-jwt (async)`]: function(done) {
+    [`${algorithm} - fast-jwt (async)`]: function (done) {
       fastjwtSignAsync(payload, done)
     }
   })
@@ -214,28 +210,28 @@ function compareVerifying(token, algorithm, publicKey) {
   }
 
   const tests = {
-    [`${algorithm} - fast-jwt (sync)`]: function() {
+    [`${algorithm} - fast-jwt (sync)`]: function () {
       fastjwtVerify(token)
     },
-    [`${algorithm} - fast-jwt (async)`]: function(done) {
+    [`${algorithm} - fast-jwt (async)`]: function (done) {
       fastjwtVerifyAsync(token, done)
     },
-    [`${algorithm} - fast-jwt (sync with cache)`]: function() {
+    [`${algorithm} - fast-jwt (sync with cache)`]: function () {
       fastjwtCachedVerify(token)
     },
-    [`${algorithm} - fast-jwt (async with cache)`]: function(done) {
+    [`${algorithm} - fast-jwt (async with cache)`]: function (done) {
       fastjwtCachedVerifyAsync(token, done)
     },
-    [`${algorithm} - jose (sync)`]: function() {
+    [`${algorithm} - jose (sync)`]: function () {
       joseVerify(token, josePublicKey)
     }
   }
 
   if (!isEdDSA) {
-    tests[`${algorithm} - jsonwebtoken (sync)`] = function() {
+    tests[`${algorithm} - jsonwebtoken (sync)`] = function () {
       jsonwebtokenVerify(token, publicKey)
     }
-    tests[`${algorithm} - jsonwebtoken (async)`] = function(done) {
+    tests[`${algorithm} - jsonwebtoken (async)`] = function (done) {
       jsonwebtokenVerify(token, publicKey, done)
     }
   }
