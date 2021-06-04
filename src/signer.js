@@ -77,7 +77,11 @@ function sign(
 
   // Validate payload
   if (typeof payload !== 'object') {
-    throw new TokenError(TokenError.codes.invalidType, 'The payload must be a object, a string or a buffer.')
+    throw new TokenError(TokenError.codes.invalidType, 'The payload must be an object.')
+  }
+
+  if (payload.exp && (!Number.isInteger(payload.exp) || payload.exp < 0)) {
+    throw new TokenError(TokenError.codes.invalidClaimValue, 'The exp claim must be a positive integer.')
   }
 
   // Prepare the header
@@ -98,7 +102,7 @@ function sign(
     ...payload,
     ...fixedPayload,
     iat: noTimestamp ? undefined : Math.floor(iat / 1000),
-    exp: expiresIn ? Math.floor((iat + expiresIn) / 1000) : undefined,
+    exp: expiresIn ? Math.floor((iat + expiresIn) / 1000) : payload.exp || undefined,
     nbf: notBefore ? Math.floor((iat + notBefore) / 1000) : undefined
   }
 

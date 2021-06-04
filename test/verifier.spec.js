@@ -4,7 +4,7 @@ const { createHash } = require('crypto')
 const { readFileSync } = require('fs')
 const { resolve } = require('path')
 const { test } = require('tap')
-const { install: fakeTime } = require('lolex')
+const { install: fakeTime } = require('@sinonjs/fake-timers')
 
 const { createSigner, createVerifier, TokenError } = require('../src')
 const { useNewCrypto } = require('../src/crypto')
@@ -477,7 +477,7 @@ test('it validates the aud claim only if explicitily enabled', (t) => {
         { allowedAud: 'AUD2' }
       )
     },
-    { message: 'None of aud claim values is allowed.' }
+    { message: 'None of aud claim values are allowed.' }
   )
 
   t.throws(
@@ -487,18 +487,18 @@ test('it validates the aud claim only if explicitily enabled', (t) => {
         { allowedAud: [/abc/, 'cde'] }
       )
     },
-    { message: 'None of aud claim values is allowed.' }
+    { message: 'None of aud claim values are allowed.' }
   )
 
   t.strictDeepEqual(
     verify(
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEMSIsIkRVQTIiXSwiaXNzIjoiSVNTIiwic3ViIjoiU1VCIiwibm9uY2UiOiJOT05DRSJ9.8fqzi23J-GjaD7rW3OYJv8UtBYkx8MOkViJjS4sXmVw',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJqdGkiOiJKVEkiLCJhdWQiOlsiQVVEIiwiRFVBMiJdLCJpc3MiOiJJU1MiLCJzdWIiOiJTVUIiLCJub25jZSI6Ik5PTkNFIn0.lhu5t694BY0QmF7SChUw7Z9nUPtupWCkhrQ2rqN06GU',
       { allowedAud: 'AUD' }
     ),
     {
       a: 1,
       jti: 'JTI',
-      aud: ['AUD1', 'DUA2'],
+      aud: ['AUD', 'DUA2'],
       iss: 'ISS',
       sub: 'SUB',
       nonce: 'NONCE'
@@ -775,7 +775,37 @@ test('it validates the nonce claim only if explicitily enabled', (t) => {
   t.end()
 })
 
+<<<<<<< HEAD
 test('token type validation', (t) => {
+=======
+test('it validates allowed claims values using equality when appropriate', t => {
+  // The iss claim in the token starts with ISS
+  t.throws(
+    () => {
+      return verify(
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpc3MiOiJJU1NfUFJFRklYIn0.yAVrfuzH-1H_dzd8YhDV2ukWAGHB4DY4Wiv1cqz1JaY',
+        { allowedIss: 'ISS' }
+      )
+    },
+    { message: 'The iss claim value is not allowed.' }
+  )
+
+  // The iss claim in the token ends with ISS
+  t.throws(
+    () => {
+      return verify(
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpc3MiOiJTVUZGSVhfSVNTIn0.YNfIVGQCnIk0sQzsvOnLl_ueRs64m2M2BgiKyczzsAk',
+        { allowedIss: 'ISS' }
+      )
+    },
+    { message: 'The iss claim value is not allowed.' }
+  )
+
+  t.end()
+})
+
+test('token type validation', t => {
+>>>>>>> upstream/master
   t.throws(() => createVerifier({ key: 'secret' })(123), {
     message: 'The token must be a string or a buffer.'
   })

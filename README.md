@@ -6,9 +6,7 @@
 
 <!-- [![Code Coverage](https://img.shields.io/codecov/c/gh/nearform/-verify?token=)](https://codecov.io/gh/nearform/fast-jwt) -->
 
-Fast JSON Web Token implementation
-
-> This module is experimental. There might be bugs or security vulnerabilities.
+Fast JSON Web Token implementation.
 
 ## Installation
 
@@ -197,6 +195,10 @@ For verified tokens, caching considers the time sensitive claims of the token (`
 
 Performances improvements varies by uses cases and by the type of the operation performed and the algorithm used.
 
+## JWKS
+
+JWKS is supported via [get-jwks](https://github.com/nearform/get-jwks). Check out the documentation for integration examples.
+
 ## Benchmarks
 
 ### Signing
@@ -369,4 +371,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## License
 
-Copyright NearForm Ltd 2020. Licensed under the [Apache-2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
+Copyright NearForm Ltd 2020-2021. Licensed under the [Apache-2.0 license](http://www.apache.org/licenses/LICENSE-2.0).

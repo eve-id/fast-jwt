@@ -195,7 +195,39 @@ test('it adds a exp claim, overriding the payload one, only if the payload is a 
   t.end()
 })
 
+<<<<<<< HEAD
 test('it adds a nbf claim, overriding the payload one, only if the payload is a object', (t) => {
+=======
+test('it adds the payload exp claim', t => {
+  t.equal(
+    sign({ a: 1, iat: 100, exp: 200 }, {}),
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMCwiZXhwIjoyMDB9.RJbB3-VIjLIQr-VmZ1Kl42MrHr2pAU-CQuXK8jHMKR0'
+  )
+
+  t.end()
+})
+
+test('it ignores invalid exp claim', t => {
+  t.equal(
+    sign({ a: 1, iat: 100, exp: Number.NaN }, {}),
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMH0.5V5yFNSqmn0w6yDR1vUbykF36WwdQmADMTLJwiJtx8w'
+  )
+
+  t.equal(
+    sign({ a: 1, iat: 100, exp: null }, {}),
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMH0.5V5yFNSqmn0w6yDR1vUbykF36WwdQmADMTLJwiJtx8w'
+  )
+
+  t.equal(
+    sign({ a: 1, iat: 100, exp: undefined }, {}),
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMH0.5V5yFNSqmn0w6yDR1vUbykF36WwdQmADMTLJwiJtx8w'
+  )
+
+  t.end()
+})
+
+test('it adds a nbf claim, overriding the payload one, only if the payload is a object', t => {
+>>>>>>> upstream/master
   t.equal(
     sign({ a: 1, iat: 100 }, { notBefore: 1000 }),
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoxLCJpYXQiOjEwMCwibmJmIjoxMDF9.WhZeNowse7q1s5FSlcMcs_4KcxXpSdQ4yqv0xrGB3sU'
@@ -418,11 +450,23 @@ test('returns a promise according to key option', (t) => {
 
 test('payload validation', (t) => {
   t.throws(() => createSigner({ key: 'secret' })(123), {
-    message: 'The payload must be a object, a string or a buffer.'
+    message: 'The payload must be an object.'
   })
 
   t.rejects(async () => createSigner({ key: () => 'secret' })(123), {
-    message: 'The payload must be a object, a string or a buffer.'
+    message: 'The payload must be an object.'
+  })
+
+  t.end()
+})
+
+test('exp claim validation', t => {
+  t.throws(() => createSigner({ key: 'secret' })({ exp: 'exp' }), {
+    message: 'The exp claim must be a positive integer.'
+  })
+
+  t.throws(() => createSigner({ key: 'secret' })({ exp: -1 }), {
+    message: 'The exp claim must be a positive integer.'
   })
 
   t.end()
